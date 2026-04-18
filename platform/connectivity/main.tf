@@ -14,7 +14,7 @@ module "hub_vpc" {
   public_subnets  = var.public_subnet_cidrs
 
   enable_nat_gateway = true
-  single_nat_gateway = true
+  single_nat_gateway = false
 }
 
 module "transit_gateway" {
@@ -23,7 +23,7 @@ module "transit_gateway" {
 
   name                                = "${var.name_prefix}-tgw"
   description                         = "Central IT transit gateway"
-  enable_auto_accept_shared_attachments = true
+  enable_auto_accept_shared_attachments = false
 
   vpc_attachments = {
     hub = {
