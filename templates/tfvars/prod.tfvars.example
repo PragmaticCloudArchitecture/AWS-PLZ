@@ -9,14 +9,13 @@ aws_account_ids = {
 }
 
 # Primary deployment region for this environment.
-aws_region = "<value>"
+region = "<value>"
 
-# CIDR ranges for VPC and subnets in this environment.
-vpc_cidrs = {
-  hub_vpc          = "<value>" # CIDR for the shared hub/connectivity VPC.
-  private_subnets  = ["<value>", "<value>"] # Private subnet CIDRs aligned to selected AZs.
-  public_subnets   = ["<value>", "<value>"] # Public subnet CIDRs aligned to selected AZs.
-}
+# Availability zones and CIDR ranges for the connectivity VPC in this environment.
+azs                  = ["<value>", "<value>"] # Availability zones aligned to the selected subnet CIDRs.
+hub_vpc_cidr         = "<value>"              # CIDR for the shared hub/connectivity VPC.
+private_subnet_cidrs = ["<value>", "<value>"] # Private subnet CIDRs aligned to selected AZs.
+public_subnet_cidrs  = ["<value>", "<value>"] # Public subnet CIDRs aligned to selected AZs.
 
 # Standard tags applied to resources for ownership, cost, and governance.
 tagging_standards = {

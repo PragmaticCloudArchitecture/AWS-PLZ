@@ -19,7 +19,7 @@ public_subnet_cidrs  = ["<value>", "<value>"] # Public subnet CIDRs aligned to s
 
 # Standard tags applied to resources for ownership, cost, and governance.
 tagging_standards = {
-  environment = "test"    # Environment identifier tag.
+  environment = "<value>" # Environment identifier tag.
   owner       = "<value>" # Team or individual responsible for this environment.
   cost_center = "<value>" # Cost center or billing reference.
   project     = "<value>" # Project/application name.
