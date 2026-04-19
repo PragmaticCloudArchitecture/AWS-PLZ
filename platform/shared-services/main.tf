@@ -1,12 +1,19 @@
 provider "aws" {
-  region = var.region
+  region = local.effective_region
+}
+
+locals {
+  global_config = var.global_config_file == "" ? {} : yamldecode(file(var.global_config_file))
+
+  effective_region               = coalesce(var.region, try(local.global_config.default_regions.shared_services, null), try(local.global_config.default_region, null))
+  effective_artifact_bucket_name = coalesce(var.artifact_bucket_name, try(local.global_config.accounts.metadata.artifact_bucket_name, null))
 }
 
 module "artifact_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "~> 4.0"
 
-  bucket = var.artifact_bucket_name
+  bucket = local.effective_artifact_bucket_name
 
   versioning = {
     enabled = true

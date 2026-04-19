@@ -9,6 +9,6 @@ output "cloudwatch_log_group_arn" {
 }
 
 output "security_hub_enabled" {
-  value       = var.enable_security_hub
+  value       = local.effective_enable_security_hub
   description = "Whether security hub baseline is enabled."
 }

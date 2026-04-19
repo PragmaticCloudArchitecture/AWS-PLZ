@@ -1,9 +1,18 @@
 provider "aws" {
-  region = var.region
+  region = local.effective_region
+}
+
+locals {
+  global_config = var.global_config_file == "" ? {} : yamldecode(file(var.global_config_file))
+
+  effective_region              = coalesce(var.region, try(local.global_config.default_regions.security_monitoring, null), try(local.global_config.default_region, null))
+  effective_name_prefix         = coalesce(var.name_prefix, try(local.global_config.accounts.metadata.name_prefix, null))
+  effective_cloudtrail_bucket_name = coalesce(var.cloudtrail_bucket_name, try(local.global_config.accounts.metadata.cloudtrail_bucket_name, null))
+  effective_enable_security_hub = coalesce(var.enable_security_hub, try(local.global_config.features.enable_security_hub, null), true)
 }
 
 resource "aws_s3_bucket" "cloudtrail" {
-  bucket = var.cloudtrail_bucket_name
+  bucket = local.effective_cloudtrail_bucket_name
 }
 
 resource "aws_s3_bucket_versioning" "cloudtrail" {
@@ -66,12 +75,12 @@ data "aws_iam_policy_document" "cloudtrail_bucket_policy" {
 }
 
 resource "aws_cloudwatch_log_group" "central" {
-  name              = "/aws/plz/${var.name_prefix}/central"
+  name              = "/aws/plz/${local.effective_name_prefix}/central"
   retention_in_days = 365
 }
 
 resource "aws_iam_role" "cloudtrail_logs" {
-  name = "${var.name_prefix}-cloudtrail-logs-role"
+  name = "${local.effective_name_prefix}-cloudtrail-logs-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -86,7 +95,7 @@ resource "aws_iam_role" "cloudtrail_logs" {
 }
 
 resource "aws_iam_role_policy" "cloudtrail_logs" {
-  name = "${var.name_prefix}-cloudtrail-logs-policy"
+  name = "${local.effective_name_prefix}-cloudtrail-logs-policy"
   role = aws_iam_role.cloudtrail_logs.id
 
   policy = jsonencode({
@@ -103,7 +112,7 @@ resource "aws_iam_role_policy" "cloudtrail_logs" {
 }
 
 resource "aws_cloudtrail" "org_trail" {
-  name                          = "${var.name_prefix}-org-trail"
+  name                          = "${local.effective_name_prefix}-org-trail"
   s3_bucket_name                = aws_s3_bucket.cloudtrail.id
   include_global_service_events = true
   is_multi_region_trail         = true
@@ -113,7 +122,7 @@ resource "aws_cloudtrail" "org_trail" {
 }
 
 resource "aws_config_configuration_recorder" "baseline" {
-  name     = "${var.name_prefix}-config-recorder"
+  name     = "${local.effective_name_prefix}-config-recorder"
   role_arn = aws_iam_role.config.arn
 
   recording_group {
@@ -123,7 +132,7 @@ resource "aws_config_configuration_recorder" "baseline" {
 }
 
 resource "aws_config_delivery_channel" "baseline" {
-  name           = "${var.name_prefix}-config-delivery-channel"
+  name           = "${local.effective_name_prefix}-config-delivery-channel"
   s3_bucket_name = aws_s3_bucket.cloudtrail.id
 }
 
@@ -135,7 +144,7 @@ resource "aws_config_configuration_recorder_status" "baseline" {
 }
 
 resource "aws_iam_role" "config" {
-  name = "${var.name_prefix}-config-recorder-role"
+  name = "${local.effective_name_prefix}-config-recorder-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -155,7 +164,7 @@ resource "aws_iam_role_policy_attachment" "config_managed" {
 }
 
 resource "aws_iam_role_policy" "config_s3_delivery" {
-  name = "${var.name_prefix}-config-delivery-policy"
+  name = "${local.effective_name_prefix}-config-delivery-policy"
   role = aws_iam_role.config.id
 
   policy = jsonencode({
@@ -181,5 +190,5 @@ resource "aws_iam_role_policy" "config_s3_delivery" {
 }
 
 resource "aws_securityhub_account" "this" {
-  count = var.enable_security_hub ? 1 : 0
+  count = local.effective_enable_security_hub ? 1 : 0
 }
