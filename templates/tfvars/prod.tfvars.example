@@ -27,7 +27,7 @@ tagging_standards = {
 
 # Feature toggles for optional capabilities in this environment.
 feature_toggles = {
-  enable_security_monitoring = "<value>" # Toggle for centralized security services (true/false).
-  enable_shared_services     = "<value>" # Toggle for shared services baseline (true/false).
-  enable_connectivity_hub    = "<value>" # Toggle for connectivity hub resources (true/false).
+  enable_security_monitoring = <value> # Toggle for centralized security services (true/false).
+  enable_shared_services     = <value> # Toggle for shared services baseline (true/false).
+  enable_connectivity_hub    = <value> # Toggle for connectivity hub resources (true/false).
 }
