@@ -239,8 +239,9 @@ Direct variable values and `tfvars` values continue to take precedence over `con
 
 ### Standardized Deployment Scripts
 
-Use the included deployment scripts to run Terraform with consistent parameters and plan output paths (`./plans/<environment>`):
+Use the included deployment scripts to run Terraform with consistent parameters and plan output paths (`./plans/<environment>`).
 
+> **Note:** Terraform plan artifacts can contain sensitive values. If you use these scripts, consider adding `plans/` (and, if applicable, `*.tfplan`) to the `.gitignore` file in the working directory where you run them to avoid accidentally committing generated plan files.
 ```bash
 ./deploy.sh init -e dev -r us-east-1 -t templates/tfvars/dev.tfvars.example
 ./deploy.sh validate -e dev -r us-east-1 -t templates/tfvars/dev.tfvars.example
