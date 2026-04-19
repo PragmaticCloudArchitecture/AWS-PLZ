@@ -20,7 +20,7 @@ vpc_cidrs = {
 
 # Standard tags applied to resources for ownership, cost, and governance.
 tagging_standards = {
-  environment = "sandbox" # Environment identifier tag.
+  environment = "<value>" # Environment identifier tag.
   owner       = "<value>" # Team or individual responsible for this environment.
   cost_center = "<value>" # Cost center or billing reference.
   project     = "<value>" # Project/application name.
