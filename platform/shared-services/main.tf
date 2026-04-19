@@ -6,6 +6,7 @@ locals {
   global_config = var.global_config_file == "" ? {} : yamldecode(file(var.global_config_file))
 
   effective_region               = coalesce(var.region, try(local.global_config.default_regions.shared_services, null), try(local.global_config.default_region, null))
+  effective_name_prefix          = coalesce(var.name_prefix, try(local.global_config.accounts.metadata.name_prefix, null))
   effective_artifact_bucket_name = coalesce(var.artifact_bucket_name, try(local.global_config.accounts.metadata.artifact_bucket_name, null))
 }
 
