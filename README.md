@@ -237,6 +237,31 @@ terraform plan -var-file=templates/tfvars/dev.tfvars.example
 
 Direct variable values and `tfvars` values continue to take precedence over `config.yaml` values.
 
+### Standardized Deployment Scripts
+
+Use the included deployment scripts to run Terraform with consistent parameters and plan output paths (`./plans/<environment>`). Both scripts execute Terraform from the repository root (the script directory), even if you invoke them from another working directory.
+
+> **Note:** Terraform plan artifacts can contain sensitive values. If you use these scripts, consider adding `plans/` (and, if applicable, `*.tfplan`) to the repository `.gitignore` to avoid accidentally committing generated plan files.
+```bash
+./deploy.sh init -e dev -r us-east-1 -t templates/tfvars/dev.tfvars.example
+./deploy.sh validate -e dev -r us-east-1 -t templates/tfvars/dev.tfvars.example
+./deploy.sh plan -e dev -r us-east-1 -t templates/tfvars/dev.tfvars.example
+./deploy.sh apply -e dev -r us-east-1 -t templates/tfvars/dev.tfvars.example
+./deploy.sh destroy -e dev -r us-east-1 -t templates/tfvars/dev.tfvars.example
+```
+
+PowerShell equivalent:
+
+```powershell
+./deploy.ps1 init -Environment dev -Region us-east-1 -Tfvars templates/tfvars/dev.tfvars.example
+./deploy.ps1 validate -Environment dev -Region us-east-1 -Tfvars templates/tfvars/dev.tfvars.example
+./deploy.ps1 plan -Environment dev -Region us-east-1 -Tfvars templates/tfvars/dev.tfvars.example
+./deploy.ps1 apply -Environment dev -Region us-east-1 -Tfvars templates/tfvars/dev.tfvars.example
+./deploy.ps1 destroy -Environment dev -Region us-east-1 -Tfvars templates/tfvars/dev.tfvars.example
+```
+
+Both scripts prompt for manual confirmation before `apply` and `destroy`.
+
 ### Basic Module Usage
 
 ```hcl
