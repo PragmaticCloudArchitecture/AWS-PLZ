@@ -17,6 +17,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$locationPushed = $false
 
 function Write-Info {
     param([string]$Message)
@@ -45,18 +46,27 @@ try {
         throw "Terraform is not installed or not available in PATH."
     }
 
-    if ($Tfvars -and -not (Test-Path -LiteralPath $Tfvars -PathType Leaf)) {
-        throw "tfvars file does not exist: $Tfvars"
-    }
-
     $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-    $planDir = Join-Path $scriptDir "plans/$Environment"
+    $planDir = Join-Path (Join-Path $scriptDir "plans") $Environment
     $timestamp = Get-Date -Format "yyyyMMddHHmmss"
     $planFile = Join-Path $planDir "$Operation-$Region-$timestamp.tfplan"
 
-    $terraformArgs = @()
+    $resolvedTfvars = $null
     if ($Tfvars) {
-        $terraformArgs += "-var-file=$Tfvars"
+        try {
+            $resolvedTfvars = (Resolve-Path -LiteralPath $Tfvars -ErrorAction Stop).Path
+        }
+        catch {
+            throw "tfvars file does not exist: $Tfvars"
+        }
+    }
+
+    Push-Location -LiteralPath $scriptDir
+    $locationPushed = $true
+
+    $terraformArgs = @()
+    if ($resolvedTfvars) {
+        $terraformArgs += "-var-file=$resolvedTfvars"
     }
 
     Write-Info "Starting Terraform operation: $Operation"
@@ -112,4 +122,9 @@ try {
 catch {
     Write-Fail $_.Exception.Message
     exit 1
+}
+finally {
+    if ($locationPushed) {
+        Pop-Location
+    }
 }
