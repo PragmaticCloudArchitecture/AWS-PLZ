@@ -1,0 +1,34 @@
+# Development environment Terraform variables template.
+# Copy this file to dev.tfvars and replace each <value> placeholder.
+
+# AWS account IDs used by this environment.
+aws_account_ids = {
+  management = "<value>" # AWS account ID for the management account.
+  audit      = "<value>" # AWS account ID for the audit/security account.
+  workload   = "<value>" # AWS account ID for the primary dev workload account.
+}
+
+# Primary deployment region for this environment.
+aws_region = "<value>"
+
+# CIDR ranges for VPC and subnets in this environment.
+vpc_cidrs = {
+  hub_vpc          = "<value>" # CIDR for the shared hub/connectivity VPC.
+  private_subnets  = ["<value>", "<value>"] # Private subnet CIDRs aligned to selected AZs.
+  public_subnets   = ["<value>", "<value>"] # Public subnet CIDRs aligned to selected AZs.
+}
+
+# Standard tags applied to resources for ownership, cost, and governance.
+tagging_standards = {
+  environment = "dev"     # Environment identifier tag.
+  owner       = "<value>" # Team or individual responsible for this environment.
+  cost_center = "<value>" # Cost center or billing reference.
+  project     = "<value>" # Project/application name.
+}
+
+# Feature toggles for optional capabilities in this environment.
+feature_toggles = {
+  enable_security_monitoring = "<value>" # Toggle for centralized security services (true/false).
+  enable_shared_services     = "<value>" # Toggle for shared services baseline (true/false).
+  enable_connectivity_hub    = "<value>" # Toggle for connectivity hub resources (true/false).
+}
