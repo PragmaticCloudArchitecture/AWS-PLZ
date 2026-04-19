@@ -1,0 +1,33 @@
+# Production environment Terraform variables template.
+# Copy this file to prod.tfvars and replace each <value> placeholder.
+
+# AWS account IDs used by this environment.
+aws_account_ids = {
+  management = "<value>" # AWS account ID for the management account.
+  audit      = "<value>" # AWS account ID for the audit/security account.
+  workload   = "<value>" # AWS account ID for the primary prod workload account.
+}
+
+# Primary deployment region for this environment.
+region = "<value>"
+
+# Availability zones and CIDR ranges for the connectivity VPC in this environment.
+azs                  = ["<value>", "<value>"] # Availability zones aligned to the selected subnet CIDRs.
+hub_vpc_cidr         = "<value>"              # CIDR for the shared hub/connectivity VPC.
+private_subnet_cidrs = ["<value>", "<value>"] # Private subnet CIDRs aligned to selected AZs.
+public_subnet_cidrs  = ["<value>", "<value>"] # Public subnet CIDRs aligned to selected AZs.
+
+# Standard tags applied to resources for ownership, cost, and governance.
+tagging_standards = {
+  environment = "<value>" # Environment identifier tag.
+  owner       = "<value>" # Team or individual responsible for this environment.
+  cost_center = "<value>" # Cost center or billing reference.
+  project     = "<value>" # Project/application name.
+}
+
+# Feature toggles for optional capabilities in this environment.
+feature_toggles = {
+  enable_security_monitoring = <value> # Toggle for centralized security services (true/false).
+  enable_shared_services     = <value> # Toggle for shared services baseline (true/false).
+  enable_connectivity_hub    = <value> # Toggle for connectivity hub resources (true/false).
+}
