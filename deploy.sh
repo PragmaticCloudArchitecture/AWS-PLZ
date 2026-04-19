@@ -3,6 +3,12 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ORIGINAL_DIR="$(pwd)"
+cd "$SCRIPT_DIR" || {
+  printf '[ERROR] Failed to change directory to script directory: %s\n' "$SCRIPT_DIR" >&2
+  exit 1
+}
+trap 'cd "$ORIGINAL_DIR"' EXIT
 
 log_info() {
   printf '[INFO] %s\n' "$1"
