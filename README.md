@@ -208,6 +208,35 @@ AWS-PLZ/
 
 ## Usage Examples
 
+### Global Configuration (recommended)
+
+AWS-PLZ now supports a root-level global configuration file (`config.yaml`) to centralize organization structure, account metadata, and default regions.
+
+1. Copy and update `/config.yaml` values.
+2. Pass `global_config_file` to modules.
+
+```hcl
+module "governance" {
+  source             = "./platform/governance"
+  global_config_file = "${path.root}/config.yaml"
+}
+
+module "connectivity" {
+  source             = "./platform/connectivity"
+  global_config_file = "${path.root}/config.yaml"
+}
+```
+
+### Existing tfvars Workflow (still supported)
+
+Current `*.tfvars` workflows are unchanged. You can continue to pass variables directly (for example with files under `templates/tfvars/`):
+
+```bash
+terraform plan -var-file=templates/tfvars/dev.tfvars.example
+```
+
+Direct variable values and `tfvars` values continue to take precedence over `config.yaml` values.
+
 ### Basic Module Usage
 
 ```hcl

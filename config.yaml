@@ -1,0 +1,61 @@
+# Global configuration for AWS-PLZ modules.
+# Copy this file and replace example values before use.
+#
+# This file centralizes shared inputs while keeping backward compatibility
+# with existing module variables and *.tfvars files.
+
+# Default regions used by modules when `region` is not set directly.
+default_region: us-east-1
+default_regions:
+  account_vending: us-east-1
+  governance: us-east-1
+  connectivity: us-east-1
+  security_monitoring: us-east-1
+  shared_services: us-east-1
+  app_template: us-east-1
+
+# Organization structure and governance defaults.
+organization:
+  organizational_units:
+    Sandbox:
+      # Leave empty (or remove) to attach to the organization root.
+      parent_ou_id:
+    SharedServices:
+      parent_ou_id:
+  # Optional SCP JSON (string) used by platform/governance.
+  baseline_scp_json: ""
+
+# Account metadata and commonly reused naming inputs.
+accounts:
+  account_vending:
+    name: Sandbox Account
+    email: example+sandbox@example.com
+    # Example OU ID format: ou-ab12-12345678
+    parent_ou_id: ou-ab12-12345678
+    baseline_tags:
+      environment: sandbox
+      owner: platform-team
+      project: aws-plz
+  metadata:
+    name_prefix: plz
+    cloudtrail_bucket_name: plz-cloudtrail-example
+    artifact_bucket_name: plz-artifacts-example
+    # Path consumed by workloads/app-template module.
+    lambda_source_path: ./src/lambda
+
+# Network defaults consumed by platform/connectivity.
+network:
+  hub_vpc_cidr: 10.0.0.0/16
+  azs:
+    - us-east-1a
+    - us-east-1b
+  private_subnet_cidrs:
+    - 10.0.1.0/24
+    - 10.0.2.0/24
+  public_subnet_cidrs:
+    - 10.0.101.0/24
+    - 10.0.102.0/24
+
+# Feature flags for optional capabilities.
+features:
+  enable_security_hub: true
